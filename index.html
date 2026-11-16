@@ -253,7 +253,9 @@ function mkBuilding(kind,team,tx,ty,instant){
  const d=B[kind],b={id:nid++,ent:'b',kind,def:d,team,tx,ty,w:d.w,h:d.h,x:(tx+d.w/2)*TS,y:(ty+d.h/2)*TS,hp:d.hp,max:d.hp,bt:instant?1:0,tur:Math.PI/2,cool:0,acq:0,seen:team===0,rec:0,job:null,flash:0,repair:false};
  b.r=Math.max(d.w,d.h)*TS/2;blds.push(b);setBld(b,true);
  for(let y=ty;y<ty+d.h;y++)for(let x=tx;x<tx+d.w;x++)tib[y*W+x]=0;
- evict(b);return b;
+ evict(b);
+ if(kind==='refinery'&&!instant){setTimeout(()=>{if(!b.dead&&G){const u=spawnUnit(b,'harvester');if(u&&team===0){toast('精煉廠附贈一台採礦車','ok')}}},900)}
+ return b;
 }
 function freeNear(tx,ty,max=7){
  if(inb(tx,ty)&&!pg[ty][tx])return{x:tx,y:ty};
