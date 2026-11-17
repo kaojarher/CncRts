@@ -9,51 +9,57 @@
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
 html,body{margin:0;height:100%;background:#000;color:#d8ecd0;font:13px/1.35 "Noto Sans TC","Microsoft JhengHei","PingFang TC",system-ui,sans-serif;overflow:hidden;overscroll-behavior:none}
 button{font:inherit;color:inherit;cursor:pointer}
-#app{position:fixed;inset:0;display:grid;grid-template-columns:minmax(0,1fr) clamp(190px,23vw,250px);padding:env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);background:#000}
+#app{position:fixed;top:0;left:0;right:0;bottom:0;display:grid;grid-template-columns:minmax(0,1fr) 196px;padding:env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);background:#000}
 #view{position:relative;overflow:hidden;min-height:0}
-#game{position:absolute;inset:0;width:100%;height:100%;display:block;touch-action:none;background:#071007;cursor:crosshair}
+#game{position:absolute;top:0;left:0;width:100%;height:100%;display:block;touch-action:none;background:#071007;cursor:crosshair}
 .fb{min-width:44px;height:44px;padding:0 10px;border:1px solid var(--ln);background:rgba(10,18,10,.78);border-radius:10px;color:#cfe;font-size:14px}
 .fb.on{background:#2c5a2c;border-color:var(--g);color:#fff}
 .fb:active{transform:scale(.96)}
-#topbtns{position:absolute;top:8px;right:8px;display:flex;gap:6px}
-#cmdbar{position:absolute;left:8px;bottom:8px;right:8px;display:flex;gap:6px;flex-wrap:wrap;pointer-events:none}
-#cmdbar button{pointer-events:auto}
-#toasts{position:absolute;top:60px;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;gap:4px;align-items:center;pointer-events:none;width:60%}
+#topbtns{position:absolute;top:8px;right:8px;display:flex}
+#topbtns button+button{margin-left:6px}
+#cmdbar{position:absolute;left:8px;bottom:8px;right:8px;display:flex;flex-wrap:wrap;pointer-events:none}
+#cmdbar button{pointer-events:auto;margin:0 6px 6px 0}
+#toasts{position:absolute;top:60px;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;pointer-events:none;width:60%}
 .toast{background:rgba(0,0,0,.75);border:1px solid var(--ln);padding:5px 12px;border-radius:8px;font-size:14px;text-align:center}
 .toast.warn{border-color:var(--r);color:#ffb0a8}.toast.ok{border-color:var(--g);color:#c8ffc8}
-#hint{position:absolute;bottom:64px;left:50%;transform:translateX(-50%);display:none;align-items:center;gap:8px;background:rgba(0,0,0,.8);border:1px solid var(--y);color:var(--y);padding:4px 6px 4px 12px;border-radius:8px;white-space:nowrap}
-#hint button{height:30px;padding:0 10px;border:1px solid var(--y);background:#332a00;border-radius:6px}
+#hint{position:absolute;bottom:64px;left:50%;transform:translateX(-50%);display:none;align-items:center;background:rgba(0,0,0,.8);border:1px solid var(--y);color:var(--y);padding:4px 6px 4px 12px;border-radius:8px;white-space:nowrap}
+#hint button{margin-left:8px;height:30px;padding:0 10px;border:1px solid var(--y);background:#332a00;border-radius:6px}
 #info{position:absolute;left:8px;top:8px;background:rgba(0,0,0,.6);border:1px solid var(--ln);border-radius:8px;padding:4px 10px;display:none;font-size:13px}
-#side{display:flex;flex-direction:column;gap:6px;padding:8px;background:linear-gradient(#222c1f,#141b12);border-left:2px solid var(--ln);min-height:0;overflow:hidden}
+#side{display:flex;flex-direction:column;padding:8px;background:linear-gradient(#222c1f,#141b12);border-left:2px solid var(--ln);min-height:0;overflow:hidden}
+#side>*+*{margin-top:6px}
 #cr{font:700 22px/1 "Courier New",monospace;color:var(--y);text-align:right;background:#000;padding:6px 8px;border:1px solid #444;border-radius:6px}
-#pw{display:flex;align-items:center;gap:6px;margin-top:4px;font-size:12px}
+#pw>*+*{margin-left:6px}
+#pw{display:flex;align-items:center;margin-top:4px;font-size:12px}
 #pwbar{flex:1;height:10px;background:#000;border:1px solid #444;border-radius:5px;overflow:hidden}
 #pwbar i{display:block;height:100%;width:50%;background:var(--g)}
-#mini{width:min(100%,26vh);aspect-ratio:1;align-self:center;background:#000;border:2px solid #4a6a42;image-rendering:pixelated;touch-action:none}
-#tabs{display:flex;gap:4px}
+#mini{display:block;height:auto;width:min(100%,26vh);align-self:center;background:#000;border:2px solid #4a6a42;image-rendering:pixelated;touch-action:none}
+#tabs{display:flex}#tabs button+button{margin-left:4px}
 #tabs button{flex:1;height:34px;border:1px solid var(--ln);background:#18211a;border-radius:6px}
 #tabs button.on{background:#335b30;color:#fff}
 #items{flex:1;min-height:0;overflow-y:auto;display:grid;grid-template-columns:repeat(auto-fill,minmax(76px,1fr));gap:5px;align-content:start;touch-action:pan-y}
 .it{position:relative;border:1px solid var(--ln);background:#121a11;border-radius:6px;padding:3px;display:flex;flex-direction:column;align-items:center;overflow:hidden;min-height:80px}
-.it canvas{width:100%;aspect-ratio:4/3;display:block;border-radius:3px}
+.it canvas{width:100%;height:auto;display:block;border-radius:3px}
 .it b{font-size:12px;font-weight:600;line-height:1.2}.it i{font-style:normal;font-size:11px;color:var(--y)}
 .it .pg{position:absolute;left:0;bottom:0;width:100%;height:0;background:rgba(120,255,120,.25);pointer-events:none}
 .it .st{position:absolute;left:0;top:0;width:100%;height:calc(100% - 30px);display:flex;align-items:center;justify-content:center;font-weight:700;text-align:center;font-size:12px;text-shadow:0 0 3px #000;pointer-events:none;padding:2px}
 .it .x{position:absolute;right:2px;top:2px;width:22px;height:22px;border-radius:50%;background:rgba(0,0,0,.7);border:1px solid #888;display:none;align-items:center;justify-content:center;font-style:normal;font-size:12px;color:#fff}
 .it.lock{opacity:.45}.it.ready{border-color:var(--g);box-shadow:0 0 6px var(--g)}.it.busy .x,.it.ready .x{display:flex}
 .it .n{position:absolute;left:3px;top:3px;background:#000a;border-radius:8px;padding:0 5px;font-size:11px;display:none}
-#sr{display:flex;gap:4px}#sr button{flex:1;height:36px;border:1px solid var(--ln);background:#18211a;border-radius:6px}#sr button.on{background:#6a2a1c;border-color:var(--r);color:#fff}
-.ov{position:fixed;inset:0;z-index:20;background:rgba(0,0,0,.86);display:flex;align-items:center;justify-content:center;padding:16px;overflow:auto}
+#sr{display:flex}#sr button+button{margin-left:4px}#sr button{flex:1;height:36px;border:1px solid var(--ln);background:#18211a;border-radius:6px}#sr button.on{background:#6a2a1c;border-color:var(--r);color:#fff}
+.ov{position:fixed;top:0;left:0;right:0;bottom:0;z-index:20;background:rgba(0,0,0,.86);display:flex;align-items:center;justify-content:center;padding:16px;overflow:auto}
 .ov.hide{display:none}
 .card{max-width:560px;width:100%;background:#141c13;border:2px solid var(--ln);border-radius:14px;padding:20px;line-height:1.7}
 .card h1{margin:0 0 4px;color:var(--y);font-size:26px;letter-spacing:2px}.card h2{margin:0 0 8px;color:var(--y)}
 .card p{margin:6px 0;color:#b9d2b0}.card ul{margin:6px 0;padding-left:18px;color:#b9d2b0}
-.diff{display:flex;gap:8px;margin:12px 0}.diff button{flex:1;height:44px;border:1px solid var(--ln);background:#18211a;border-radius:8px}.diff button.on{background:#335b30;color:#fff;border-color:var(--g)}
+.diff{display:flex;margin:12px 0}.diff button+button{margin-left:8px}.diff button{flex:1;height:44px;border:1px solid var(--ln);background:#18211a;border-radius:8px}.diff button.on{background:#335b30;color:#fff;border-color:var(--g)}
 .go{width:100%;height:50px;margin-top:6px;border:0;border-radius:10px;background:#3a8a3a;color:#fff;font-size:18px;font-weight:700}
+@media (min-width:1000px){#app{grid-template-columns:minmax(0,1fr) 240px}}
+html,body{touch-action:manipulation}
 @media (max-aspect-ratio:1/1){
+ #side>*+*{margin-top:0}
  #app{grid-template-columns:minmax(0,1fr);grid-template-rows:minmax(0,1fr) auto}
  #side{height:min(40vh,290px);display:grid;grid-template-columns:104px minmax(0,1fr);grid-template-rows:auto minmax(0,1fr) auto;grid-template-areas:"hud tabs" "mini items" "sr items";border-left:0;border-top:2px solid var(--ln);gap:6px}
- #hud{grid-area:hud}#tabs{grid-area:tabs}#mini{grid-area:mini;width:100%;align-self:start}#items{grid-area:items}#sr{grid-area:sr}
+ #hud{grid-area:hud}#mini{margin-top:0}#tabs{grid-area:tabs}#mini{grid-area:mini;width:100%;align-self:start}#items{grid-area:items}#sr{grid-area:sr}
  #cr{font-size:17px;padding:5px}#toasts{width:80%}
 }
 </style>
@@ -83,7 +89,7 @@ button{font:inherit;color:inherit;cursor:pointer}
 </div>
 <div class="ov" id="start"><div class="card">
  <h1>泰伯利亞前線</h1>
- <p>HTML5 Canvas 即時戰略（CNC 風格）。單一 HTML 檔，圖像全部以程式繪製；尋路採用 GitHub 開源專案 <b>EasyStar.js</b>（prettymuchbryce/easystarjs）。</p>
+ <!-- <p>HTML5 Canvas 即時戰略（CNC 風格）。單一 HTML 檔，圖像全部以程式繪製；尋路採用 GitHub 開源專案 <b>EasyStar.js</b>（prettymuchbryce/easystarjs）。</p> -->
  <ul><li>展開機動建設車 → 蓋發電廠、精煉廠、兵營、武器工廠 → 生產部隊</li><li>採集綠色泰伯利亞礦賺取資金，摧毀敵方 NOD 所有建築與部隊即獲勝</li><li>戰爭迷霧：視野外看不到敵人</li></ul>
  <div class="diff"><button data-d="0">簡單</button><button data-d="1" class="on">普通</button><button data-d="2">困難</button></div>
  <button class="go" id="bStart">開始任務</button>
@@ -900,12 +906,20 @@ function clickAt(wx,wy,pt,shift){
 }
 
 /* ================= 輸入 ================= */
+const HASPE=!!window.PointerEvent;
+function ptr(el,type,fn){
+ if(HASPE){el.addEventListener('pointer'+type,fn);return}
+ if(type==='leave')return;
+ const map={down:'touchstart',move:'touchmove',up:'touchend',cancel:'touchcancel'};
+ const mk=t=>({pointerId:t.identifier,pointerType:'touch',clientX:t.clientX,clientY:t.clientY,button:0,shiftKey:false,preventDefault:function(){}});
+ el.addEventListener(map[type],ev=>{ev.preventDefault();for(let i=0;i<ev.changedTouches.length;i++)fn(mk(ev.changedTouches[i]))},{passive:false});
+}
 const ptrs=new Map();let drag=null,pinch=null;const keys=new Set();
 const rect=()=>cv.getBoundingClientRect();
 function pos(e){const r=rect();return{x:e.clientX-r.left,y:e.clientY-r.top}}
 function updGhost(sx,sy){if(!ui.place)return;const w=s2w(sx,sy),d=B[ui.place.kind];ui.place.tx=Math.round(w.x/TS-d.w/2);ui.place.ty=Math.round(w.y/TS-d.h/2)}
 cv.addEventListener('contextmenu',e=>e.preventDefault());
-cv.addEventListener('pointerdown',e=>{
+ptr(cv,'down',e=>{
  ac();if(AC&&AC.state==='suspended')AC.resume();
  try{cv.setPointerCapture(e.pointerId)}catch(_){}
  const p=pos(e);ptrs.set(e.pointerId,p);
@@ -918,8 +932,8 @@ cv.addEventListener('pointerdown',e=>{
  if(ptrs.size===2){const[a,b]=[...ptrs.values()];pinch={d:Math.hypot(a.x-b.x,a.y-b.y),z:cam.z,cx:(a.x+b.x)/2,cy:(a.y+b.y)/2};drag=null;return}
  drag={mode:'pending',sx:p.x,sy:p.y,x:p.x,y:p.y,cx:cam.x,cy:cam.y,type:'touch'};if(ui.place){updGhost(p.x,p.y);drag.mode='ghost'}
 });
-cv.addEventListener('pointermove',e=>{
- const p=pos(e);ui.mx=p.x;ui.my=p.y;ui.mIn=true;if(ptrs.has(e.pointerId))ptrs.set(e.pointerId,p);
+ptr(cv,'move',e=>{
+ const p=pos(e);ui.mx=p.x;ui.my=p.y;ui.mIn=e.pointerType==='mouse';if(ptrs.has(e.pointerId))ptrs.set(e.pointerId,p);
  if(e.pointerType==='mouse'){const w=s2w(p.x,p.y);ui.hover=pickEnt(w.x,w.y,1);if(ui.place)updGhost(p.x,p.y)}
  if(pinch&&ptrs.size>=2){const[a,b]=[...ptrs.values()],d=Math.hypot(a.x-b.x,a.y-b.y),mx=(a.x+b.x)/2,my=(a.y+b.y)/2;
   const wb=s2w(pinch.cx,pinch.cy);cam.z=pinch.z*d/pinch.d;clampCam();cam.x=wb.x-mx/cam.z;cam.y=wb.y-my/cam.z;clampCam();return}
@@ -940,9 +954,9 @@ function endPtr(e,cancel){
   clickAt(w.x,w.y,d.type,d.shift);
  }
 }
-cv.addEventListener('pointerup',e=>endPtr(e,false));
-cv.addEventListener('pointercancel',e=>endPtr(e,true));
-cv.addEventListener('pointerleave',e=>{if(e.pointerType==='mouse')ui.mIn=false});
+ptr(cv,'up',e=>endPtr(e,false));
+ptr(cv,'cancel',e=>endPtr(e,true));
+ptr(cv,'leave',e=>{if(e.pointerType==='mouse')ui.mIn=false});
 cv.addEventListener('wheel',e=>{e.preventDefault();const p=pos(e),wb=s2w(p.x,p.y);cam.z*=e.deltaY<0?1.12:1/1.12;clampCam();cam.x=wb.x-p.x/cam.z;cam.y=wb.y-p.y/cam.z;clampCam()},{passive:false});
 function tryPlace(){
  const p=ui.place;if(!p)return;
@@ -952,10 +966,10 @@ function tryPlace(){
 let mmDrag=false;
 function mmPos(e){const r=mini.getBoundingClientRect();return{x:(e.clientX-r.left)/r.width*W*TS,y:(e.clientY-r.top)/r.height*H*TS}}
 mini.addEventListener('contextmenu',e=>e.preventDefault());
-mini.addEventListener('pointerdown',e=>{try{mini.setPointerCapture(e.pointerId)}catch(_){}const p=mmPos(e);
+ptr(mini,'down',e=>{try{mini.setPointerCapture(e.pointerId)}catch(_){}const p=mmPos(e);
  if(e.pointerType==='mouse'&&e.button===2){cmdAt(p.x,p.y,false);return}mmDrag=true;centerOn(p.x,p.y)});
-mini.addEventListener('pointermove',e=>{if(mmDrag){const p=mmPos(e);centerOn(p.x,p.y)}});
-mini.addEventListener('pointerup',()=>mmDrag=false);
+ptr(mini,'move',e=>{if(mmDrag){const p=mmPos(e);centerOn(p.x,p.y)}});
+ptr(mini,'up',()=>mmDrag=false);
 window.addEventListener('keydown',e=>{
  if(!G||!$('#start').classList.contains('hide'))return;
  const k=e.key.toLowerCase();keys.add(k);
@@ -1067,7 +1081,7 @@ function frame(now){
 /* ================= 啟動 ================= */
 buildItems();
 newGame(1);G.paused=false;
-new ResizeObserver(resize).observe(cv);addEventListener('resize',resize);resize();
+if(window.ResizeObserver)new ResizeObserver(resize).observe(cv);else setInterval(resize,500);addEventListener('resize',resize);addEventListener('orientationchange',()=>setTimeout(resize,300));document.addEventListener('gesturestart',e=>e.preventDefault());resize();
 {const m=units.find(u=>u.team===0&&u.kind==='mcv');centerOn(m.x,m.y)}
 requestAnimationFrame(frame);
 window.__cnc={get G(){return G},units:()=>units,blds:()=>blds,AI,ui,cam,step:n=>{for(let i=0;i<n;i++)update(.05)},startGame,finderReal:()=>finder.real===true,clickItem,placeBuilding,deploy,canPlace,findSpot,orderMove};
