@@ -19,7 +19,7 @@ button{font:inherit;color:inherit;cursor:pointer}
 #topbtns button+button{margin-left:6px}
 #cmdbar{position:absolute;left:8px;bottom:8px;right:8px;display:flex;flex-wrap:wrap;pointer-events:none}
 #cmdbar button{pointer-events:auto;margin:0 6px 6px 0}
-#toasts{position:absolute;top:60px;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;pointer-events:none;width:60%}
+#toasts{position:absolute;top:96px;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;pointer-events:none;width:60%}
 .toast{background:rgba(0,0,0,.75);border:1px solid var(--ln);padding:5px 12px;border-radius:8px;font-size:14px;text-align:center}
 .toast.warn{border-color:var(--r);color:#ffb0a8}.toast.ok{border-color:var(--g);color:#c8ffc8}
 #hint{position:absolute;bottom:64px;left:50%;transform:translateX(-50%);display:none;align-items:center;background:rgba(0,0,0,.8);border:1px solid var(--y);color:var(--y);padding:4px 6px 4px 12px;border-radius:8px;white-space:nowrap}
@@ -46,7 +46,7 @@ button{font:inherit;color:inherit;cursor:pointer}
 .it.lock{opacity:.45}.it.ready{border-color:var(--g);box-shadow:0 0 6px var(--g)}.it.busy .x,.it.ready .x{display:flex}
 .it .n{position:absolute;left:3px;top:3px;background:#000a;border-radius:8px;padding:0 5px;font-size:11px;display:none}
 #sr{display:flex}#sr button+button{margin-left:4px}#sr button{flex:1;height:36px;border:1px solid var(--ln);background:#18211a;border-radius:6px}#sr button.on{background:#6a2a1c;border-color:var(--r);color:#fff}
-.ov{position:fixed;top:0;left:0;right:0;bottom:0;z-index:20;background:rgba(0,0,0,.86);display:flex;align-items:center;justify-content:center;padding:16px;overflow:auto}
+.ov{position:fixed;top:0;left:0;right:0;bottom:0;z-index:20;background:rgba(0,0,0,.86);display:flex;align-items:flex-start;justify-content:center;padding:16px;overflow:auto}
 .ov.hide{display:none}
 .card{max-width:560px;width:100%;background:#141c13;border:2px solid var(--ln);border-radius:14px;padding:20px;line-height:1.7}
 .card h1{margin:0 0 4px;color:var(--y);font-size:26px;letter-spacing:2px}.card h2{margin:0 0 8px;color:var(--y)}
@@ -62,6 +62,18 @@ html,body{touch-action:manipulation}
  #hud{grid-area:hud}#mini{margin-top:0}#tabs{grid-area:tabs}#mini{grid-area:mini;width:100%;align-self:start}#items{grid-area:items}#sr{grid-area:sr}
  #cr{font-size:17px;padding:5px}#toasts{width:80%}
 }
+
+.ov .card{margin:auto}
+#obj{position:absolute;left:8px;top:46px;max-width:56%;display:none;background:rgba(0,0,0,.62);border:1px solid var(--y);color:var(--y);border-radius:8px;padding:3px 9px;font-size:12px;line-height:1.35;pointer-events:none}
+#mlist{display:grid;grid-template-columns:repeat(3,1fr);grid-gap:6px;margin:10px 0 6px}
+#mlist button{min-height:52px;border:1px solid var(--ln);background:#18211a;border-radius:8px;padding:4px 2px;font-size:12px;line-height:1.25}
+#mlist button b{display:block;font-size:15px;color:var(--y)}
+#mlist button.on{background:#335b30;border-color:var(--g);color:#fff}
+#mlist button.done span::after{content:' ✔';color:#7be07b}
+#mbrief{background:#0c130b;border:1px solid var(--ln);border-radius:8px;padding:8px 10px;color:#b9d2b0;font-size:13px;line-height:1.55;min-height:96px}
+#mbrief h3{margin:0 0 4px;color:var(--y);font-size:16px}
+#mbrief em{font-style:normal;color:#fff}
+#bNext{display:none;background:#b8860b}
 </style>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/easystarjs/0.4.4/easystar-0.4.4.min.js"></script>
 <script>window.EasyStar||document.write('<script src="https://cdn.jsdelivr.net/npm/easystarjs@0.4.4/bin/easystar-0.4.4.min.js"><\/script>')</script>
@@ -71,6 +83,7 @@ html,body{touch-action:manipulation}
  <div id="view">
   <canvas id="game"></canvas>
   <div id="info"></div>
+  <div id="obj"></div>
   <div id="toasts"></div>
   <div id="hint"><span></span><button id="bCancel">取消</button></div>
   <div id="topbtns"><button class="fb" id="bPause" title="暫停 (Space)">⏸</button><button class="fb" id="bMute" title="音效">🔊</button><button class="fb" id="bFs" title="全螢幕">⛶</button><button class="fb" id="bHelp" title="說明">?</button></div>
@@ -91,10 +104,11 @@ html,body{touch-action:manipulation}
  <h1>泰伯利亞前線</h1>
  <!-- <p>HTML5 Canvas 即時戰略（CNC 風格）。單一 HTML 檔，圖像全部以程式繪製；尋路採用 GitHub 開源專案 <b>EasyStar.js</b>（prettymuchbryce/easystarjs）。</p> -->
  <ul><li>展開機動建設車 → 蓋發電廠、精煉廠、兵營、武器工廠 → 生產部隊</li><li>採集綠色泰伯利亞礦賺取資金，摧毀敵方 NOD 所有建築與部隊即獲勝</li><li>戰爭迷霧：視野外看不到敵人</li></ul>
+ <div id="mlist"></div><div id="mbrief"></div>
  <div class="diff"><button data-d="0">簡單</button><button data-d="1" class="on">普通</button><button data-d="2">困難</button></div>
  <button class="go" id="bStart">開始任務</button>
 </div></div>
-<div class="ov hide" id="over"><div class="card" style="text-align:center"><h1 id="ovT"></h1><p id="ovP"></p><button class="go" id="bAgain">再玩一次</button></div></div>
+<div class="ov hide" id="over"><div class="card" style="text-align:center"><h1 id="ovT"></h1><p id="ovP"></p><button class="go" id="bNext">下一場戰役 ▶</button><button class="go" id="bRetry" style="background:#2f6a2f">重打本關</button><button class="go" id="bAgain" style="background:#34402f">戰役選單</button></div></div>
 <div class="ov hide" id="help"><div class="card"><h2>操作說明</h2>
  <ul>
   <li><b>電腦</b>：左鍵選取／拖曳框選；右鍵移動或攻擊；滑鼠移到畫面邊緣或按方向鍵捲動；滾輪縮放；雙擊選同類；S 停止、D 展開、A＋左鍵攻擊移動、Ctrl＋1~9 編組、1~9 叫出、Space 暫停、Esc 取消。</li>
@@ -442,7 +456,7 @@ function updHarv(u,dt){
    if(u.ref&&!u.ref.dead&&rectDist(u.x,u.y,u.ref)<TS*1.6)u.hs='unload';else u.hs='ret';break;
   case'unload':{
    if(!u.ref||u.ref.dead){u.hs='ret';break}
-   const a=Math.min(u.cargo,100*dt);u.cargo-=a;G.credits[u.team]+=a;
+   const a=Math.min(u.cargo,100*dt);u.cargo-=a;G.credits[u.team]+=a;G.earn[u.team]+=a;
    if(u.cargo<=.5){u.cargo=0;u.hs='seek';u.wait=0}break}
  }
 }
@@ -542,17 +556,60 @@ function deploy(u){
 }
 
 /* ================= AI（NOD） ================= */
+
+/* ================= 戰役任務 ================= */
+const MISSIONS=[
+ {n:'灘頭堡',tag:'基礎訓練',seed:1101,cr:3000,ecr:0,lvl:0,base:false,units:['mcv','minigunner','minigunner','rocket','light'],
+  goal:{t:'destroy'},obj:'摧毀 NOD 所有建築與部隊',pre:0,out:[],
+  ai:{size:4,startAt:420,cap:10,sp:.7},
+  brief:'NOD 在這片海灘上建了一座小型前進基地。先展開建設場、蓋發電廠與精煉廠，累積兵力後將它夷平。敵軍反應遲緩，適合熟悉操作。',
+  win:'灘頭堡已鞏固，NOD 前進基地被夷平。'},
+ {n:'泰伯利亞淘金',tag:'經濟任務',seed:2202,cr:1500,ecr:500,lvl:0,base:false,units:['mcv','minigunner','minigunner','light'],
+  goal:{t:'earn',v:6000},obj:'累積採礦收入 $6000',pre:0,out:[],
+  ai:{size:5,startAt:240,cap:14,sp:.85},
+  brief:'總部急需資金。多蓋精煉廠、多派採礦車，累積 <em>$6000</em> 的採礦收入（只計採礦所得）。注意 NOD 的騷擾部隊會攻擊你的採礦車。',
+  win:'採礦配額達成，總部對你的經濟表現非常滿意。'},
+ {n:'鐵壁防守',tag:'防禦任務',seed:3303,cr:2000,ecr:2500,lvl:1,base:true,units:['harvester','minigunner','minigunner','rocket','rocket'],
+  goal:{t:'survive',v:480},obj:'堅守基地',pre:0,out:[],tur:3,
+  ai:{size:6,startAt:45,cap:30,sp:1.15},
+  brief:'你已有一座完整基地，但 NOD 發現了它，並將以一波接一波的攻勢壓上來。蓋砲塔、造火箭兵，<em>堅守 8 分鐘</em>等待援軍抵達。基地與部隊全滅即失敗。',
+  win:'援軍抵達，基地守住了！'},
+ {n:'閃電斬首',tag:'突襲任務',seed:4404,cr:800,ecr:1500,lvl:1,base:false,units:['mcv','medium','medium','medium','light','light','light','rocket','rocket','rocket','rocket','minigunner','minigunner','minigunner'],
+  goal:{t:'conyard'},obj:'摧毀敵方建設場',pre:5,
+  out:[['barracks',30,28],['turret',28,26],['turret',33,26],['turret',31,31]],
+  ai:{size:6,startAt:600,cap:18,sp:1},
+  brief:'你只有一支突擊部隊。敵人的防禦很強，但只要<em>摧毀敵方建設場</em>，指揮鏈就會崩潰。找出弱點、集中火力，直取敵人心臟。',
+  win:'建設場被摧毀，NOD 指揮系統癱瘓！'},
+ {n:'鐵甲洪流',tag:'裝甲任務',seed:5505,cr:5000,ecr:1500,lvl:1,base:false,units:['mcv','light','light','light'],ban:['minigunner','rocket'],
+  goal:{t:'destroy'},obj:'以戰車摧毀 NOD',pre:6,
+  out:[['barracks',46,40],['turret',44,38],['turret',48,42],['power',44,42]],
+  ai:{size:8,startAt:200,cap:26,sp:1},
+  brief:'上級要求測試新式裝甲戰術：<em>本任務禁用步兵</em>。善用輕型與中型戰車，配合砲塔防守，碾碎 NOD 並清除沿途前哨。',
+  win:'鋼鐵洪流橫掃戰場，NOD 全軍覆沒。'},
+ {n:'最終決戰',tag:'決戰任務',seed:6606,cr:3000,ecr:3500,lvl:2,base:true,units:['harvester','harvester','minigunner','minigunner','rocket','rocket','light','light'],
+  goal:{t:'destroy'},obj:'徹底殲滅 NOD',pre:4,tur:2,
+  out:[['barracks',30,30],['turret',28,28],['turret',33,28],['power',34,33],['turret',27,34]],
+  ai:{size:8,startAt:100,cap:40,sp:1.2},
+  brief:'這是最後一戰。NOD 傾巢而出，擁有雄厚資金、前哨與持續的大規模攻勢。你有完整基地，但必須同時擴張、防守並反攻。<em>殲滅所有敵人</em>，結束這場戰爭。',
+  win:'NOD 勢力被徹底殲滅，戰爭結束，你是最後的勝利者！'}
+];
+function okRaw(kind,tx,ty){const d=B[kind];for(let y=ty;y<ty+d.h;y++)for(let x=tx;x<tx+d.w;x++)if(!inb(x,y)||!walk[y*W+x]||bg[y*W+x])return false;return true}
+function spotRaw(kind,tx,ty,rad){for(let r=0;r<=rad;r++)for(let dy=-r;dy<=r;dy++)for(let dx=-r;dx<=r;dx++){if(Math.max(Math.abs(dx),Math.abs(dy))!==r)continue;if(okRaw(kind,tx+dx,ty+dy))return{x:tx+dx,y:ty+dy}}return null}
+function putB(kind,team,tx,ty,rad){const f=spotRaw(kind,tx,ty,rad||4);return f?mkBuilding(kind,team,f.x,f.y,true):null}
+const UPAT=[[1,-1],[-1,1],[0,2],[2,2],[3,1],[-2,-1],[3,-1],[-2,3],[4,3],[1,4],[5,2],[-3,1],[5,0],[2,-3],[0,-3],[4,-2],[-1,4],[3,4],[6,1],[6,-1]];
 const AI={cur:null,wave:0,size:6,attacking:false,t:0,startAt:150,cap:24,lastOrder:0};
 function aiInit(){
- const d=G.diff;AI.cur=null;AI.wave=0;AI.size=[8,6,5][d];AI.startAt=[260,170,110][d];AI.cap=[16,26,40][d];AI.attacking=false;AI.t=0;
+ const m=G.m,df=G.diff;AI.cur=null;AI.wave=0;AI.size=Math.max(3,m.ai.size+[-1,0,1][df]);AI.startAt=m.ai.startAt*[1.3,1,.75][df];AI.cap=m.ai.cap;AI.sp=m.ai.sp*[.85,1,1.15][df];AI.attacking=false;AI.t=0;
  const s=startPos[1];
  mkBuilding('conyard',1,s.x-1,s.y-1,true);
  mkBuilding('power',1,s.x-5,s.y-1,true);mkBuilding('power',1,s.x-5,s.y+1,true);
  mkBuilding('refinery',1,s.x-1,s.y+3,true);mkBuilding('barracks',1,s.x+3,s.y-1,true);
  const h=mkUnit('harvester',1,s.x+1,s.y+6);mkUnit('minigunner',1,s.x-3,s.y+4);mkUnit('minigunner',1,s.x-2,s.y+5);h.hs='seek';
+ for(let i=0;i<(m.pre||0);i++){const sp=findSpot(1,'turret');if(sp)mkBuilding('turret',1,sp.x,sp.y,true)}
+ for(const o of m.out||[])putB(o[0],1,o[1],o[2],5);
 }
 function aiPick(){
- const n=k=>countB(1,k),pw=G.pwr[1],d=G.diff;
+ const n=k=>countB(1,k),pw=G.pwr[1],d=G.lvl;
  if(!n('conyard'))return null;
  if(pw.p-pw.u<25&&n('power')<9)return'power';
  if(!n('refinery'))return'refinery';
@@ -575,7 +632,7 @@ function findSpot(team,kind){
  c.sort((a,b)=>a[0]-b[0]);return c.length?{x:c[0][1],y:c[0][2]}:null;
 }
 function aiUpdate(dt){
- AI.t+=dt;const d=G.diff,spd=[.75,1,1.25][d];
+ AI.t+=dt;const d=G.lvl,spd=AI.sp;
  if(!AI.cur){const k=aiPick();if(k&&G.credits[1]>=B[k].cost*.2)AI.cur={kind:k,def:B[k],p:0}}
  else{
   if(advance(AI.cur,dt*spd,1)&&AI.cur.p>=.9999){
@@ -637,28 +694,45 @@ function growTib(){
 }
 function checkEnd(){
  if(G.over)return;
- const alive=t=>blds.some(b=>b.team===t)||units.some(u=>u.team===t&&(u.def.dmg||u.kind==='mcv'));
+ const alive=t=>blds.some(b=>b.team===t&&!b.dead)||units.some(u=>u.team===t&&!u.dead&&(u.def.dmg||u.kind==='mcv'));
+ const g=G.m.goal;
  if(!alive(1)){endGame(true)}else if(!alive(0)){endGame(false)}
+ else if(g.t==='conyard'&&!blds.some(b=>b.team===1&&b.kind==='conyard'&&!b.dead))endGame(true);
+ else if(g.t==='earn'&&G.earn[0]>=g.v)endGame(true);
+ else if(g.t==='survive'&&G.t>=g.v)endGame(true);
 }
+let done={};try{done=JSON.parse(localStorage.getItem('cnc_done')||'{}')||{}}catch(e){done={}}
 function endGame(win){
- G.over=true;$('#ovT').textContent=win?'任務成功':'任務失敗';$('#ovT').style.color=win?'#7be07b':'#e65a4f';
- $('#ovP').textContent=win?'NOD 勢力已被殲滅。用時 '+fmtT(G.t)+'。':'你的基地與部隊已全數被摧毀。';
- setTimeout(()=>$('#over').classList.remove('hide'),1200);
+ G.over=true;const last=G.mi>=MISSIONS.length-1;
+ $('#ovT').textContent=win?(last?'戰役勝利':'任務成功'):'任務失敗';$('#ovT').style.color=win?'#7be07b':'#e65a4f';
+ $('#ovP').textContent=win?G.m.win+' 用時 '+fmtT(G.t)+'。':'你的基地與部隊已全數被摧毀。';
+ if(win){done[G.mi]=1;try{localStorage.setItem('cnc_done',JSON.stringify(done))}catch(e){}}
+ $('#bNext').style.display=win&&!last?'block':'none';
+ setTimeout(()=>{$('#over').classList.remove('hide');buildMenu()},1200);
 }
 const fmtT=s=>Math.floor(s/60)+' 分 '+Math.floor(s%60)+' 秒';
 
 /* ================= 新遊戲 ================= */
-function newGame(diff){
+function newGame(diff,mi){
+ mi=mi||0;const m=MISSIONS[mi];
  units=[];blds=[];projs=[];parts=[];marks=[];ui.sel=[];ui.place=null;ui.mode=null;ui.amove=false;ui.groups={};
- G={t:0,diff,credits:[2500,2500],pwr:[{p:0,u:0,low:false},{p:0,u:0,low:false}],prod:{struct:null,unit:{inf:[],veh:[]}},over:false,paused:false,lastWarn:-99,fogT:0,tibT:1,chk:1,shownCr:2500};
- genMap(20260 + Math.floor(Math.random()*9000));
+ G={t:0,diff,mi,m,lvl:m.lvl,earn:[0,0],credits:[m.cr,2500+m.ecr],pwr:[{p:0,u:0,low:false},{p:0,u:0,low:false}],prod:{struct:null,unit:{inf:[],veh:[]}},over:false,paused:false,lastWarn:-99,fogT:0,tibT:1,chk:1,shownCr:m.cr};
+ genMap(m.seed);
  const s=startPos[0];
- mkUnit('mcv',0,s.x+1,s.y-1);mkUnit('minigunner',0,s.x-1,s.y+1);mkUnit('minigunner',0,s.x,s.y+2);mkUnit('rocket',0,s.x+2,s.y+2);mkUnit('light',0,s.x+3,s.y+1);
+ if(m.base){
+  putB('conyard',0,s.x-1,s.y-1,2);putB('power',0,s.x-5,s.y-1,2);putB('power',0,s.x-5,s.y+1,2);
+  putB('refinery',0,s.x-1,s.y+3,2);putB('barracks',0,s.x+3,s.y-1,2);putB('factory',0,s.x+3,s.y+2,2);
+  const T=[[7,-4],[7,3],[5,-6],[8,0]];for(let i=0;i<(m.tur||0);i++)putB('turret',0,s.x+T[i][0],s.y+T[i][1],3);
+ }
+ m.units.forEach((k,i)=>{
+  const o=m.base?[7+(i%4),-1+Math.floor(i/4)*2]:UPAT[i%UPAT.length];
+  const f=freeNear(s.x+o[0],s.y+o[1])||{x:s.x+o[0],y:s.y+o[1]};
+  const u=mkUnit(k,0,f.x,f.y);if(k==='harvester')u.hs='seek';
+ });
  aiInit();calcPower();updFog();
  cam.z=innerWidth>900?1:.85;
  return G;
 }
-
 /* ================= 音效 / 提示 ================= */
 let AC=null,muted=false,noiseBuf=null,lastSay=0;
 function ac(){if(!AC){try{AC=new(window.AudioContext||window.webkitAudioContext)();const n=AC.sampleRate,b=AC.createBuffer(1,n,n),d=b.getChannelData(0);for(let i=0;i<n;i++)d[i]=Math.random()*2-1;noiseBuf=b}catch(e){}}return AC}
@@ -1014,6 +1088,7 @@ function buildItems(){
 }
 function clickItem(k,isB){
  if(!G||G.over)return;sfx('click');
+ if(G.m.ban&&G.m.ban.indexOf(k)>=0){toast('本任務禁用','warn');return}
  if(isB){
   const it=G.prod.struct;
   if(it&&it.kind===k){if(it.ready){ui.mode=null;ui.place={kind:k,tx:0,ty:0};const b=baseCenter(0);const w=ui.mIn?s2w(ui.mx,ui.my):(b||{x:VW/2,y:VH/2});ui.place.tx=Math.round(w.x/TS-B[k].w/2);ui.place.ty=Math.round(w.y/TS-B[k].h/2);if(!ui.mIn&&b)centerOn(b.x,b.y);updHint();if(innerWidth<700)toast('在地圖上拖曳調整位置，放開即放置')}return}
@@ -1041,7 +1116,8 @@ function refreshItems(){
   const ok=reqOK(0,d)&&(!isB||hasB(0,'conyard'));
   if(isB){const it=G.prod.struct;if(it&&it.kind===k){if(it.ready){cls+=' ready';st='就緒\n點擊放置'}else{cls+=' busy';pr=it.p}}}
   else{const q=G.prod.unit[d.cat];n=q.filter(i=>i.kind===k).length;if(n){cls+=' busy';if(q[0].kind===k)pr=q[0].p}}
-  if(!ok){cls+=' lock';st='需要\n'+d.req.filter(r=>!hasB(0,r)).map(r=>BN[r]).join('、')}
+  if(G.m.ban&&G.m.ban.indexOf(k)>=0){cls+=' lock';st='本任務\n禁用'}
+  else if(!ok){cls+=' lock';st='需要\n'+d.req.filter(r=>!hasB(0,r)).map(r=>BN[r]).join('、')}
   else if(isB&&G.prod.struct&&G.prod.struct.kind!==k)cls+=' lock';
   el.className=cls;el.querySelector('.st').textContent=st;el.querySelector('.st').style.whiteSpace='pre-line';
   el.querySelector('.pg').style.height=(pr*100)+'%';
@@ -1068,14 +1144,35 @@ $('#bMute').onclick=function(){muted=!muted;this.textContent=muted?'🔇':'🔊'
 $('#bFs').onclick=()=>{const d=document,el=d.documentElement;try{if(d.fullscreenElement||d.webkitFullscreenElement)(d.exitFullscreen||d.webkitExitFullscreen).call(d);else(el.requestFullscreen||el.webkitRequestFullscreen).call(el)}catch(e){}};
 $('#bHelp').onclick=()=>{$('#help').classList.remove('hide');if(G&&!G.paused)togglePause()};
 $('#bHelpClose').onclick=()=>{$('#help').classList.add('hide');if(G&&G.paused&&$('#start').classList.contains('hide'))togglePause()};
-let diff=1;
+let diff=1,curM=0;
 document.querySelectorAll('.diff button').forEach(b=>b.addEventListener('click',()=>{diff=+b.dataset.d;document.querySelectorAll('.diff button').forEach(x=>x.classList.toggle('on',x===b))}));
-function startGame(){
- ac();newGame(diff);$('#start').classList.add('hide');$('#over').classList.add('hide');$('#bPause').textContent='⏸';
- const m=units.find(u=>u.team===0&&u.kind==='mcv');resize();centerOn(m.x,m.y);setSel([m]);refreshItems();
- toast('點「⬢ 展開」把機動建設車變成建設場','ok');
+function buildMenu(){
+ const L=$('#mlist');L.innerHTML='';
+ MISSIONS.forEach((m,i)=>{const b=document.createElement('button');b.className=(i===curM?'on ':'')+(done[i]?'done':'');
+  b.innerHTML='<b>'+(i+1)+'</b><span>'+m.n+'</span>';b.onclick=()=>{curM=i;buildMenu()};L.appendChild(b)});
+ const m=MISSIONS[curM];
+ $('#mbrief').innerHTML='<h3>第 '+(curM+1)+' 關：'+m.n+'（'+m.tag+'）</h3>'+m.brief+'<br>目標：<em>'+m.obj+'</em>'+(m.ban?'　｜　限制：禁用步兵':'');
 }
-$('#bStart').onclick=startGame;$('#bAgain').onclick=()=>{$('#over').classList.add('hide');$('#start').classList.remove('hide')};
+let lastObj='';
+function updObj(){
+ const el=$('#obj');
+ if(!G||!$('#start').classList.contains('hide')||!$('#over').classList.contains('hide')){if(lastObj!==null){el.style.display='none';lastObj=null}return}
+ const g=G.m.goal;let t='第'+(G.mi+1)+'關｜'+G.m.obj;
+ if(g.t==='earn')t+='　$'+Math.floor(G.earn[0])+' / '+g.v;
+ else if(g.t==='survive')t+='　剩 '+fmtT(Math.max(0,g.v-G.t));
+ if(t!==lastObj){el.textContent=t;el.style.display='block';lastObj=t}
+}
+function startGame(){
+ ac();newGame(diff,curM);$('#start').classList.add('hide');$('#over').classList.add('hide');$('#bPause').textContent='⏸';
+ resize();const bc=baseCenter(0);if(bc)centerOn(bc.x,bc.y);
+ const m=units.find(u=>u.team===0&&u.kind==='mcv');setSel(m?[m]:[]);refreshItems();
+ toast('任務：'+G.m.obj,'ok');
+ if(m&&!G.m.base)setTimeout(()=>toast('點「⬢ 展開」把機動建設車變成建設場','ok'),1800);
+}
+$('#bStart').onclick=startGame;
+$('#bAgain').onclick=()=>{$('#over').classList.add('hide');$('#start').classList.remove('hide');buildMenu()};
+$('#bRetry').onclick=()=>{curM=G.mi;startGame()};
+$('#bNext').onclick=()=>{curM=Math.min(MISSIONS.length-1,G.mi+1);startGame()};
 
 /* ================= 主迴圈 ================= */
 let last=performance.now(),uiT=0,mmT=0;
@@ -1095,16 +1192,16 @@ function frameBody(now){
  if(dx||dy){cam.x+=dx*sp;cam.y+=dy*sp;clampCam()}
  if(ui.place&&ui.mIn&&!ptrs.size&&(dx||dy))updGhost(ui.mx,ui.my);
  render();
- uiT-=dt;if(uiT<=0){uiT=.1;refreshItems();if(ui.sel.length)refreshSel()}
+ uiT-=dt;if(uiT<=0){uiT=.1;refreshItems();updObj();if(ui.sel.length)refreshSel()}
  mmT-=dt;if(mmT<=0){mmT=.15;renderMini()}
 }
 /* ================= 啟動 ================= */
 buildItems();
-newGame(1);G.paused=false;
+newGame(1,0);G.paused=false;
 if(window.ResizeObserver)new ResizeObserver(resize).observe(cv);else setInterval(resize,500);addEventListener('resize',resize);addEventListener('orientationchange',()=>setTimeout(resize,300));document.addEventListener('gesturestart',e=>e.preventDefault());resize();
-{const m=units.find(u=>u.team===0&&u.kind==='mcv');centerOn(m.x,m.y)}
+{const bc=baseCenter(0);if(bc)centerOn(bc.x,bc.y)}buildMenu();
 requestAnimationFrame(frame);
-window.__cnc={get G(){return G},units:()=>units,blds:()=>blds,AI,ui,cam,step:n=>{for(let i=0;i<n;i++)update(.05)},startGame,finderReal:()=>finder.real===true,clickItem,placeBuilding,deploy,canPlace,findSpot,orderMove};
+window.__cnc={newGame,MISSIONS,checkEnd,get G(){return G},units:()=>units,blds:()=>blds,AI,ui,cam,step:n=>{for(let i=0;i<n;i++)update(.05)},startGame,finderReal:()=>finder.real===true,clickItem,placeBuilding,deploy,canPlace,findSpot,orderMove};
 })();
 </script>
 </body>
