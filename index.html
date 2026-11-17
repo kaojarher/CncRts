@@ -472,7 +472,8 @@ function sepUnits(dt){
  const n=units.length;
  for(let i=0;i<n;i++){const a=units[i];if(a.dead)continue;
   for(let j=i+1;j<n;j++){const b=units[j];if(b.dead)continue;
-   const dx=b.x-a.x,dy=b.y-a.y,m=(a.r+b.r)*.85;if(Math.abs(dx)>m||Math.abs(dy)>m)continue;
+   if(a.ghost>0||b.ghost>0)continue;
+    const dx=b.x-a.x,dy=b.y-a.y,m=(a.r+b.r)*.85;if(Math.abs(dx)>m||Math.abs(dy)>m)continue;
    const d2=dx*dx+dy*dy;if(d2>=m*m)continue;const d=Math.sqrt(d2)||.01,p=(m-d)*.7*Math.min(1,dt*12),nx=dx/d,ny=dy/d;
    const am=a.path&&a.pi<a.path.length,bm=b.path&&b.pi<b.path.length;
    const fa=am&&!bm?.3:!am&&bm?1.7:1,fb=2-fa;
@@ -564,9 +565,9 @@ const MISSIONS=[
   ai:{size:4,startAt:420,cap:10,sp:.7},
   brief:'NOD 在這片海灘上建了一座小型前進基地。先展開建設場、蓋發電廠與精煉廠，累積兵力後將它夷平。敵軍反應遲緩，適合熟悉操作。',
   win:'灘頭堡已鞏固，NOD 前進基地被夷平。'},
- {n:'泰伯利亞淘金',tag:'經濟任務',seed:2202,cr:1500,ecr:500,lvl:0,base:false,units:['mcv','minigunner','minigunner','light'],
+ {n:'泰伯利亞淘金',tag:'經濟任務',seed:2202,cr:2800,ecr:500,lvl:0,base:false,units:['mcv','minigunner','minigunner','light'],
   goal:{t:'earn',v:6000},obj:'累積採礦收入 $6000',pre:0,out:[],
-  ai:{size:5,startAt:240,cap:14,sp:.85},
+  ai:{size:4,startAt:330,cap:12,sp:.8},
   brief:'總部急需資金。多蓋精煉廠、多派採礦車，累積 <em>$6000</em> 的採礦收入（只計採礦所得）。注意 NOD 的騷擾部隊會攻擊你的採礦車。',
   win:'採礦配額達成，總部對你的經濟表現非常滿意。'},
  {n:'鐵壁防守',tag:'防禦任務',seed:3303,cr:2000,ecr:2500,lvl:1,base:true,units:['harvester','minigunner','minigunner','rocket','rocket'],
@@ -574,7 +575,7 @@ const MISSIONS=[
   ai:{size:6,startAt:45,cap:30,sp:1.15},
   brief:'你已有一座完整基地，但 NOD 發現了它，並將以一波接一波的攻勢壓上來。蓋砲塔、造火箭兵，<em>堅守 8 分鐘</em>等待援軍抵達。基地與部隊全滅即失敗。',
   win:'援軍抵達，基地守住了！'},
- {n:'閃電斬首',tag:'突襲任務',seed:4404,cr:800,ecr:1500,lvl:1,base:false,units:['mcv','medium','medium','medium','light','light','light','rocket','rocket','rocket','rocket','minigunner','minigunner','minigunner'],
+ {n:'閃電斬首',tag:'突襲任務',seed:4404,cr:2600,ecr:1500,lvl:1,base:false,units:['mcv','medium','medium','medium','light','light','light','rocket','rocket','rocket','rocket','minigunner','minigunner','minigunner'],
   goal:{t:'conyard'},obj:'摧毀敵方建設場',pre:5,
   out:[['barracks',30,28],['turret',28,26],['turret',33,26],['turret',31,31]],
   ai:{size:6,startAt:600,cap:18,sp:1},
@@ -678,6 +679,9 @@ function update(dt){
  updProd(dt);aiUpdate(dt);
  for(const u of units)if(!u.dead)updUnit(u,dt);
  for(const b of blds)if(!b.dead)updBld(b,dt);
+ for(const u of units){if(u.dead)continue;if(u.ghost>0)u.ghost-=dt;
+  if(u.path&&u.pi<u.path.length){if(Math.hypot(u.x-(u.lx||0),u.y-(u.ly||0))<dt*u.def.spd*.1)u.stk=(u.stk||0)+dt;else u.stk=0;if(u.stk>1.2){u.ghost=2.5;u.stk=0}}else u.stk=0;
+  u.lx=u.x;u.ly=u.y}
  sepUnits(dt);updFx(dt);
  G.fogT-=dt;if(G.fogT<=0){G.fogT=.25;updFog()}
  G.tibT-=dt;if(G.tibT<=0){G.tibT=2.5;growTib()}
