@@ -10,8 +10,8 @@
 html,body{margin:0;height:100%;background:#000;color:#d8ecd0;font:13px/1.35 "Noto Sans TC","Microsoft JhengHei","PingFang TC",system-ui,sans-serif;overflow:hidden;overscroll-behavior:none}
 button{font:inherit;color:inherit;cursor:pointer}
 #app{position:fixed;top:0;left:0;right:0;bottom:0;display:grid;grid-template-columns:minmax(0,1fr) 196px;padding:env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);background:#000}
-#view{position:relative;overflow:hidden;min-height:0}
-#game{position:absolute;top:0;left:0;width:100%;height:100%;display:block;touch-action:none;background:#071007;cursor:crosshair}
+#view{position:relative;overflow:hidden;min-height:0;min-width:0;align-self:stretch}
+#game{position:absolute;top:0;left:0;right:0;bottom:0;width:100%;height:100%;display:block;touch-action:none;background:#071007;cursor:crosshair}
 .fb{min-width:44px;height:44px;padding:0 10px;border:1px solid var(--ln);background:rgba(10,18,10,.78);border-radius:10px;color:#cfe;font-size:14px}
 .fb.on{background:#2c5a2c;border-color:var(--g);color:#fff}
 .fb:active{transform:scale(.96)}
@@ -781,7 +781,22 @@ function iconFor(kind,isB){
 /* ================= 主繪圖 ================= */
 const cv=$('#game'),ctx=cv.getContext('2d'),mini=$('#mini'),mctx=mini.getContext('2d');
 let VW=300,VH=300,DPR=1;
-function resize(){const r=cv.getBoundingClientRect();DPR=Math.min(window.devicePixelRatio||1,2);VW=r.width;VH=r.height;cv.width=Math.round(VW*DPR);cv.height=Math.round(VH*DPR);clampCam()}
+function measureView(){
+ const v=$('#view');v.style.width='';v.style.height='';
+ let r=cv.getBoundingClientRect();
+ if(r.width>=40&&r.height>=40)return r;
+ /* 舊版 WebKit（iOS 12）grid 拉伸高度量到 0 時，改用視窗尺寸手動計算 */
+ const a=$('#app'),sd=$('#side'),cs=getComputedStyle(a);
+ const pl=parseFloat(cs.paddingLeft)||0,pr=parseFloat(cs.paddingRight)||0,pt=parseFloat(cs.paddingTop)||0,pb=parseFloat(cs.paddingBottom)||0;
+ const iw=window.innerWidth||document.documentElement.clientWidth||320,ih=window.innerHeight||document.documentElement.clientHeight||480;
+ const aw=Math.max(0,(a.clientWidth||iw)-pl-pr),ah=Math.max(0,(a.clientHeight||ih)-pt-pb);
+ const sw=sd.offsetWidth,sh=sd.offsetHeight;
+ const portrait=iw<=ih;
+ const w=portrait?aw:Math.max(120,aw-sw),h=portrait?Math.max(120,ah-sh):ah;
+ v.style.width=w+'px';v.style.height=h+'px';
+ return{width:w,height:h};
+}
+function resize(){const r=measureView();DPR=Math.min(window.devicePixelRatio||1,2);VW=r.width;VH=r.height;cv.width=Math.round(VW*DPR);cv.height=Math.round(VH*DPR);clampCam()}
 function clampCam(){
  const minZ=Math.max(.4,Math.min(VW/(W*TS),VH/(H*TS)));cam.z=Math.max(minZ,Math.min(2.2,cam.z));
  const vw=VW/cam.z,vh=VH/cam.z;
@@ -1064,7 +1079,13 @@ $('#bStart').onclick=startGame;$('#bAgain').onclick=()=>{$('#over').classList.ad
 
 /* ================= 主迴圈 ================= */
 let last=performance.now(),uiT=0,mmT=0;
+function showErr(e){let d=document.getElementById('errb');if(!d){d=document.createElement('div');d.id='errb';d.style.cssText='position:fixed;left:0;right:0;top:0;z-index:99;background:#900;color:#fff;font:11px/1.3 monospace;padding:4px 6px;pointer-events:none;word-break:break-all';document.body.appendChild(d)}d.textContent='錯誤：'+(e&&e.message||e)+(e&&e.stack?' | '+String(e.stack).split('\n')[0]:'')}
+window.addEventListener('error',ev=>showErr(ev.error||ev.message));
 function frame(now){
+ requestAnimationFrame(frame);
+ try{frameBody(now)}catch(e){showErr(e)}
+}
+function frameBody(now){
  const dt=Math.min(.05,(now-last)/1000);last=now;snd.budget=5;
  if(G&&!G.paused&&$('#start').classList.contains('hide'))update(dt);
  // 捲動
@@ -1076,7 +1097,6 @@ function frame(now){
  render();
  uiT-=dt;if(uiT<=0){uiT=.1;refreshItems();if(ui.sel.length)refreshSel()}
  mmT-=dt;if(mmT<=0){mmT=.15;renderMini()}
- requestAnimationFrame(frame);
 }
 /* ================= 啟動 ================= */
 buildItems();
